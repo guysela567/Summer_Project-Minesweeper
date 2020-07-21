@@ -1,0 +1,9 @@
+[x] grid
+[x] cell object for every spot in the grid
+[x] add bombs to grid
+[x] check neighbors for each cell and inset number to cell property
+[x] cell.revealed property
+[x] cell.reveal recursive function
+[ ] win and fail check
+[ ] colors
+[x] emojis: 🚩, 💣, ⛏
