@@ -7,3 +7,4 @@
 [ ] win and fail check
 [ ] colors
 [x] emojis: 🚩, 💣, ⛏
+[ ] reveal all remaining bombs after a loss
