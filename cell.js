@@ -7,6 +7,10 @@ class Cell {
     this.x = i * size;
     this.y = j * size + gridOffsetY;
 
+    this.restart();
+  }
+
+  restart(){
     this.revealed = false;
     this.value = null;
     this.isBomb = false;
@@ -38,7 +42,7 @@ class Cell {
       rect(this.x, this.y, size, size);
 
       // add value numbers if cell is not a bomb or has a value of 0
-      const textToShow = !this.isBomb && this.value != 0 ? this.value : this.isBomb ? '💣' : '';
+      const textToShow = !this.isBomb && this.value != 0 ? this.value : this.isBomb ? '*' : '';
 
       // show text
       noStroke();
@@ -53,8 +57,17 @@ class Cell {
         // text
         noStroke();
         fill(0);
+        push();
+        textFont('comic sans');
         text('🚩', this.x + size / 2, this.y + size / 2);
+        pop();
       }
+    }
+  }
+
+  update() {
+    if (this.mouseHover() && mouseIsPressed && mouseButton == LEFT && state == 'ongoing') {
+      state = 'midclick';
     }
   }
 

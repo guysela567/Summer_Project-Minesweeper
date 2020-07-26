@@ -3,7 +3,12 @@ const rows = 20;
 const size = 40;
 const totalBombs = 50;
 const gridOffsetY = 100;
-let gameIsOver = false;
+
+const buttonSize = size * 1.3;
+let buttonX;
+const buttonY = gridOffsetY / 2 - buttonSize / 2;
+
+let state = 'ongoing';
 
 /*
 
@@ -27,9 +32,9 @@ let sevenSegmentFont;
 // set timer
 let time = 0;
 
-const timeInterval = setInterval(() => {
+let timeInterval = setInterval(() => {
   time++;
-}, 1000)
+}, 1000);
 
 // sounds
 let revealSound;
@@ -39,17 +44,28 @@ let gameOverSound;
 // prevent from menu to show on right click
 document.addEventListener('contextmenu', event => event.preventDefault());
 
+// buttun faces
+let winningFace;
+let similingFace;
+let deadFace;
+let midClickFace;
+
 function preload() {
   blockImg = loadImage('assets/unrevealed_block.png');
   sevenSegmentFont = loadFont('assets/Seven_Segment_Bold.ttf');
-  defaultFont = loadFont('assets/Default_Font.ttf');
+  defaultFont = loadFont('assets/Minesweeper_Regular_Font.ttf');
   revealSound = loadSound('assets/shatter.mp3');
   gameOverSound = loadSound('assets/explosion.mp3');
+  
+  winningFace = loadImage('assets/faces/winning.png');
+  similingFace = loadImage('assets/faces/smiling.png');
+  deadFace = loadImage('assets/faces/dead.png');
+  midClickFace = loadImage('assets/faces/mid_click.png');
 }
 
 function setup() {
   createCanvas(cols * size, rows * size + gridOffsetY).center('horizontal');
-  textSize(size / 1.4);
+  textSize(size / 1.8);
   textAlign(CENTER, CENTER);
 
   arrangeGrid();
@@ -58,11 +74,19 @@ function setup() {
 
   // set pickaxe cursor
   cursor('assets/Pickaxe_Cursor.cur');
+
+  textFont(defaultFont);
+
+  // button location
+  buttonX = width / 2 - buttonSize / 2;
 }
 
-function draw() {
-  background(revealedColor);
+function draw() { 
+  console.log(state);
 
+  // background
+  background(revealedColor);
+  
   // menu
   push();
 
@@ -73,21 +97,58 @@ function draw() {
   textAlign(LEFT, CENTER);
 
   // show timer
-  fill(50, 0, 0, 100);
+  fill(10, 0, 0, 50);
   text('888', 50, 50);
-  fill(220, 0, 0);
+  fill(255, 0, 0);
   text(nf(time, 3), 50, 50);
 
   // show flags left
-  fill(50, 0, 0, 100);
-  text('888', width - 120, 50);
-  fill(220, 0, 0);
-  text(nf(flagsLeft(), 3), width - 120, 50);
+  fill(10, 0, 0, 50);
+  textAlign(RIGHT);
+  text('888', width - 35, 50);
+  fill(255, 0, 0);
+  text(nf(flagsLeft(), 3), width - 35, 50);
 
   pop();
 
+  // face button
+  showButton();
+
+  // grid
   showGrid();
 }
+
+function showButton() {
+  image(blockImg, width / 2 - size / 2, gridOffsetY / 2 - size / 2, buttonSize, buttonSize);
+  // switch(status) {
+  //   case 'gameover':
+  //     image(deadFace, buttonX, buttonY, buttonSize, buttonSize);
+  //     break;
+  //   case 'ongoing':
+  //     image(similingFace, buttonX, buttonY, buttonSize, buttonSize);
+  //     break;
+  //   case 'winning':
+  //     image(winningFace, buttonX, buttonY, buttonSize, buttonSize);
+  //     break;
+  //   case 'midclick':
+  //     image(midClickFace, buttonX, buttonY, buttonSize, buttonSize);
+  //     break;
+  // }
+
+
+}
+
+function reset() {
+  arrangeGrid();
+  time = 0;
+
+  timeInterval = setInterval(() => {
+    time++;
+  }, 1000);
+
+  state = 'ongoing';
+}
+
 
 function createGrid() {
   grid = Array(cols);
@@ -107,6 +168,7 @@ function showGrid() {
   for (let i = 0; i < cols; i++) {
     for (let j = 0; j < rows; j++) {
       grid[i][j].show();
+      grid[i][j].update();
     }
   }
 }
@@ -143,7 +205,29 @@ function arrangeGrid() {
 }
 
 function mousePressed() {
-  if (gameIsOver) return;
+  // click button
+  if (mouseX > buttonX && mouseX < buttonX + buttonSize
+    && mouseY > buttonY && mouseY < buttonY + buttonSize) {
+
+    reset();
+  }
+
+  if (state == 'gameover') return;
+
+  // add flag on right click
+  for (let i = 0; i < cols; i++) {
+    for (let j = 0; j < rows; j++) {
+      if (mouseButton == RIGHT && grid[i][j].mouseHover()) {
+        grid[i][j].isFlagged = !grid[i][j].isFlagged;
+      }
+    }
+  }
+}
+
+function mouseReleased() {
+  if (state == 'gameover') return;
+
+  state = 'ongoing';
 
   for (let i = 0; i < cols; i++) {
     for (let j = 0; j < rows; j++) {
@@ -157,18 +241,14 @@ function mousePressed() {
           // check if player revealed bomb
           if (grid[i][j].isBomb) gameOver();
           else revealSound.play();
-
-        } else if (mouseButton == RIGHT) {
-          // right click
-          grid[i][j].isFlagged = !grid[i][j].isFlagged;
         }
       }
     }
   }
 }
-
+ 
 function gameOver() {
-  gameIsOver = true;
+  state = 'gameover';
   gameOverSound.play();
   clearInterval(timeInterval);
 
