@@ -66,7 +66,8 @@ class Cell {
   }
 
   update() {
-    if (this.mouseHover() && mouseIsPressed && mouseButton == LEFT && state == 'ongoing') {
+    if (this.mouseHover() && mouseIsPressed && mouseButton == LEFT 
+    && state == 'ongoing' && !this.revealed) {
       state = 'midclick';
     }
   }

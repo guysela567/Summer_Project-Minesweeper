@@ -5,6 +5,6 @@
 [x] cell.revealed property
 [x] cell.reveal recursive function
 [ ] win and fail check
-[ ] colors
+[x] colors
 [x] emojis: 🚩, 💣, ⛏
 [ ] reveal all remaining bombs after a loss

@@ -46,7 +46,7 @@ document.addEventListener('contextmenu', event => event.preventDefault());
 
 // buttun faces
 let winningFace;
-let similingFace;
+let smilingFace;
 let deadFace;
 let midClickFace;
 
@@ -58,7 +58,7 @@ function preload() {
   gameOverSound = loadSound('assets/explosion.mp3');
   
   winningFace = loadImage('assets/faces/winning.png');
-  similingFace = loadImage('assets/faces/smiling.png');
+  smilingFace = loadImage('assets/faces/smiling.png');
   deadFace = loadImage('assets/faces/dead.png');
   midClickFace = loadImage('assets/faces/mid_click.png');
 }
@@ -118,34 +118,34 @@ function draw() {
   showGrid();
 }
 
-function showButton() {
-  image(blockImg, width / 2 - size / 2, gridOffsetY / 2 - size / 2, buttonSize, buttonSize);
-  // switch(status) {
-  //   case 'gameover':
-  //     image(deadFace, buttonX, buttonY, buttonSize, buttonSize);
-  //     break;
-  //   case 'ongoing':
-  //     image(similingFace, buttonX, buttonY, buttonSize, buttonSize);
-  //     break;
-  //   case 'winning':
-  //     image(winningFace, buttonX, buttonY, buttonSize, buttonSize);
-  //     break;
-  //   case 'midclick':
-  //     image(midClickFace, buttonX, buttonY, buttonSize, buttonSize);
-  //     break;
-  // }
+async function showButton() {
+  let smily;
+  switch(state) {
+    case 'ongoing':
+      smily = await smilingFace;
+      break;
+    case 'gameover':
+      smily = await deadFace;
+      break;
+    case 'midclick':
+      smily = await midClickFace;
+      break;
+    case 'winning':
+      smily = await winningFace;
+  }
 
-
+  image(smily, buttonX, buttonY, buttonSize, buttonSize);
 }
 
 function reset() {
+  // reset grid
   arrangeGrid();
+
+  // reset time and interval
   time = 0;
+  setInterval(timeInterval);
 
-  timeInterval = setInterval(() => {
-    time++;
-  }, 1000);
-
+  // change state back to ongoing
   state = 'ongoing';
 }
 
