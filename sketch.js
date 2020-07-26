@@ -9,6 +9,7 @@ let buttonX;
 const buttonY = gridOffsetY / 2 - buttonSize / 2;
 
 let state = 'ongoing';
+let buttonFaces;
 
 /*
 
@@ -56,11 +57,13 @@ function preload() {
   defaultFont = loadFont('assets/Minesweeper_Regular_Font.ttf');
   revealSound = loadSound('assets/shatter.mp3');
   gameOverSound = loadSound('assets/explosion.mp3');
-  
-  winningFace = loadImage('assets/faces/winning.png');
-  smilingFace = loadImage('assets/faces/smiling.png');
-  deadFace = loadImage('assets/faces/dead.png');
-  midClickFace = loadImage('assets/faces/mid_click.png');
+
+  buttonFaces = {
+    'winning': loadImage('assets/faces/winning.png'),
+    'ongoing': loadImage('assets/faces/smiling.png'),
+    'gameover': loadImage('assets/faces/dead.png'),
+    'midclick': loadImage('assets/faces/mid_click.png')
+  }
 }
 
 function setup() {
@@ -84,7 +87,7 @@ function setup() {
 function draw() {
   // background
   background(revealedColor);
-  
+
   // menu
   push();
 
@@ -116,23 +119,8 @@ function draw() {
   showGrid();
 }
 
-async function showButton() {
-  let smily;
-  switch(state) {
-    case 'ongoing':
-      smily = await smilingFace;
-      break;
-    case 'gameover':
-      smily = await deadFace;
-      break;
-    case 'midclick':
-      smily = await midClickFace;
-      break;
-    case 'winning':
-      smily = await winningFace;
-  }
-
-  image(smily, buttonX, buttonY, buttonSize, buttonSize);
+function showButton() {
+  image(buttonFaces[state], buttonX, buttonY, buttonSize, buttonSize);
 }
 
 function reset() {
@@ -211,8 +199,8 @@ function arrangeGrid() {
 
 function mousePressed() {
   // click button
-  if (mouseX > buttonX && mouseX < buttonX + buttonSize
-    && mouseY > buttonY && mouseY < buttonY + buttonSize) {
+  if (mouseX > buttonX && mouseX < buttonX + buttonSize &&
+    mouseY > buttonY && mouseY < buttonY + buttonSize) {
 
     reset();
   }
@@ -251,7 +239,7 @@ function mouseReleased() {
     }
   }
 }
- 
+
 function gameOver() {
   state = 'gameover';
   gameOverSound.play();
