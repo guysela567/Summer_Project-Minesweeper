@@ -81,9 +81,7 @@ function setup() {
   buttonX = width / 2 - buttonSize / 2;
 }
 
-function draw() { 
-  console.log(state);
-
+function draw() {
   // background
   background(revealedColor);
   
@@ -141,9 +139,16 @@ function reset() {
   // reset grid
   arrangeGrid();
 
+  // clear time interval if wasn't already cleared
+  if (state != 'gameover') {
+    clearInterval(timeInterval);
+  }
+
   // reset time and interval
   time = 0;
-  setInterval(timeInterval);
+  timeInterval = setInterval(() => {
+    time++;
+  }, 1000);
 
   // change state back to ongoing
   state = 'ongoing';
