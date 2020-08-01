@@ -1,9 +1,9 @@
 body {
   margin: 0;
   padding: 0;
-  overflow: hidden;
 }
 
 canvas {
   margin: auto;
+  border: 3px rgb(123, 123 ,123) solid;
 }

@@ -1,7 +1,7 @@
-const cols = 24;
-const rows = 20;
+const cols = 30;
+const rows = 16;
 const size = 40;
-const totalBombs = 50;
+const totalBombs = 99;
 const gridOffsetY = 100;
 
 const buttonSize = size * 1.3;
@@ -31,25 +31,19 @@ let blockImg;
 let sevenSegmentFont;
 
 // set timer
+let freezeTime = true;
 let time = 0;
 
 let timeInterval = setInterval(() => {
-  time++;
+  if (!freezeTime) time++;
 }, 1000);
 
 // sounds
 let revealSound;
 let gameOverSound;
 
-
 // prevent from menu to show on right click
 document.addEventListener('contextmenu', event => event.preventDefault());
-
-// buttun faces
-let winningFace;
-let smilingFace;
-let deadFace;
-let midClickFace;
 
 function preload() {
   blockImg = loadImage('assets/unrevealed_block.png');
@@ -82,14 +76,16 @@ function setup() {
 
   // button location
   buttonX = width / 2 - buttonSize / 2;
-}
-
-function draw() {
-  // background
-  background(revealedColor);
-
-  // menu
+}     
+         
+function drawMenu() {
   push();
+
+  // menu frame
+  noFill();
+  stroke(255);
+  strokeWeight(2);
+  rect(10, 10, width - 20, gridOffsetY - 20);
 
   fill(255, 0, 0);
   noStroke();
@@ -98,25 +94,58 @@ function draw() {
   textAlign(LEFT, CENTER);
 
   // show timer
-  fill(10, 0, 0, 50);
+  fill(0);
+  rect(50, gridOffsetY * 1 / 4, 100, gridOffsetY * 1 / 2, 5);
+
+  fill(255, 0, 0, 100);
   text('888', 50, 50);
   fill(255, 0, 0);
   text(nf(time, 3), 50, 50);
 
   // show flags left
-  fill(10, 0, 0, 50);
+  fill(0);
+
+  let nfAmount;
+  let rectW = 0;
+  let rectX = 0;
+  if (flagsLeft() >= 0) {
+    nfAmount = 3;
+    rectW = 100;
+    rectX = width - 135;
+  } else if (flagsLeft() < 0 && flagsLeft() >= -99) {
+    nfAmount = 2;
+    rectW = 100;
+    rectX = width - 135;
+  } else if (flagsLeft() < -99) {
+    nfAmount = 2;
+    rectW = 130;
+    rectX = width - 165;
+  }
+
+  rect(rectX, gridOffsetY * 1 / 4, rectW, gridOffsetY * 1 / 2, 5);
+  fill(255, 0, 0, 100);
   textAlign(RIGHT);
   text('888', width - 35, 50);
   fill(255, 0, 0);
-  text(nf(flagsLeft(), 3), width - 35, 50);
+  text(nf(flagsLeft(), nfAmount), width - 35, 50);
 
   pop();
+}
+
+function draw() {
+  // background
+  background(revealedColor);
+
+  // menu
+  drawMenu();
 
   // face button
   showButton();
 
   // grid
   showGrid();
+
+  if (checkWin()) state = 'winning';
 }
 
 function showButton() {
@@ -127,21 +156,16 @@ function reset() {
   // reset grid
   arrangeGrid();
 
-  // clear time interval if wasn't already cleared
-  if (state != 'gameover') {
-    clearInterval(timeInterval);
-  }
+  // freez time
+  freezeTime = true;
 
-  // reset time and interval
+  // reset time and freez 
   time = 0;
-  timeInterval = setInterval(() => {
-    time++;
-  }, 1000);
+  freezeTime = true;
 
   // change state back to ongoing
   state = 'ongoing';
 }
-
 
 function createGrid() {
   grid = Array(cols);
@@ -185,7 +209,6 @@ function addBombs() {
   }
 }
 
-
 function arrangeGrid() {
   createGrid();
   addBombs();
@@ -218,7 +241,7 @@ function mousePressed() {
 }
 
 function mouseReleased() {
-  if (state == 'gameover') return;
+  if (state == 'gameover' || state == 'winning') return;
 
   state = 'ongoing';
 
@@ -231,8 +254,15 @@ function mouseReleased() {
           // left click
           grid[i][j].reveal();
 
+          // unfreez time on first click
+          if (freezeTime) freezeTime = false;
+
           // check if player revealed bomb
-          if (grid[i][j].isBomb) gameOver();
+          if (grid[i][j].isBomb) {
+            // mark pressed bomb with red background
+            grid[i][j].bombPressed = true;
+            gameOver();
+          }
           else revealSound.play();
         }
       }
@@ -241,13 +271,28 @@ function mouseReleased() {
 }
 
 function gameOver() {
+  firstPrees = false;
   state = 'gameover';
   gameOverSound.play();
-  clearInterval(timeInterval);
+  freezeTime = true;
 
-  // TODO: reveal all remaining bombs
+
+  // reveal all remaining bombs
+  for (let i = 0; i < cols; i++) {
+    for (let j = 0; j < rows; j++) {
+      
+      // reveal all bombs
+      if (grid[i][j].isBomb && !grid[i][j].isFlagged) {
+        grid[i][j].reveal();
+      }
+
+      // mark false flags
+      if (grid[i][j].isFlagged && !grid[i][j].isBomb) {
+        grid[i][j].falseFlag = true;
+      }
+    }
+  }
 }
-
 
 function flagsLeft() {
   let totalFlags = 0;
@@ -257,4 +302,20 @@ function flagsLeft() {
     }
   }
   return totalBombs - totalFlags;
+}
+
+function checkWin() {
+  let revealedCells = 0;
+  for (let i = 0; i < cols; i++) {
+    for (let j = 0; j < rows; j++) {
+      if (grid[i][j].revealed && !grid[i][j].isBomb) revealedCells++;
+    }
+  }
+
+  if (revealedCells == cols * rows - totalBombs) {
+    freezeTime = true;
+    return true
+  } else {
+    return false;
+  }
 }

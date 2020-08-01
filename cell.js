@@ -7,14 +7,13 @@ class Cell {
     this.x = i * size;
     this.y = j * size + gridOffsetY;
 
-    this.restart();
-  }
-
-  restart(){
     this.revealed = false;
     this.value = null;
     this.isBomb = false;
     this.isFlagged = false;
+
+    this.bombPressed = false;
+    this.falseFlag = false;
   }
 
   countNeighbors() {
@@ -36,7 +35,7 @@ class Cell {
 
   show() {
     if (this.revealed) {
-      fill(revealedColor);
+      fill(this.bombPressed ? color(250, 10, 0) : revealedColor);
       stroke(strokeColor);
       strokeWeight(3);
       rect(this.x, this.y, size, size);
@@ -50,17 +49,35 @@ class Cell {
       fill(this.value ? colors[this.value - 1] : color(0, 0, 0));
       text(textToShow, this.x + size / 2, this.y + size / 2);
     } else {
-      image(blockImg, this.x, this.y, size, size);
 
-      // flag
-      if (this.isFlagged) {
-        // text
-        noStroke();
-        fill(0);
-        push();
-        textFont('comic sans');
-        text('🚩', this.x + size / 2, this.y + size / 2);
-        pop();
+      if (this.mouseHover() && state == 'midclick' && !this.isFlagged) {
+        fill(revealedColor);
+        rect(this.x, this.y, size, size);
+      } else {
+
+        image(blockImg, this.x, this.y, size, size);
+
+        // flag
+        if (this.isFlagged) {
+          if (this.falseFlag) {
+            // false flag
+            noStroke();
+            fill(0);
+            text('*', this.x + size / 2, this.y + size / 2);
+            strokeWeight(3);
+            stroke(250, 10, 0);
+            line(this.x + 7, this.y + 7, this.x + size - 7, this.y + size - 7);
+            line(this.x + size - 7, this.y + 7, this.x + 7, this.y + size - 7);
+          } else {
+            // regular flag
+            noStroke();
+            fill(0);
+            push();
+            textFont('sans serif');
+            text('🚩', this.x + size / 2, this.y + size / 2);
+            pop();
+          }
+        }
       }
     }
   }
