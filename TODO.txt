@@ -8,4 +8,4 @@
 [v] colopp
 [v] reveal all remaining bombs after a loss
 [v] start timer after first click
-[ ] arrange grid after first click and dont make neighbors bombs
+[v] arrange grid after first click and dont make neighbors bombs

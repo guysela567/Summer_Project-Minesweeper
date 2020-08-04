@@ -23,6 +23,7 @@ totalbombs 10, 39, 99
 
 // grid
 let grid;
+let gridArranged = false;
 
 // images
 let blockImg;
@@ -65,7 +66,7 @@ function setup() {
   textSize(size / 1.8);
   textAlign(CENTER, CENTER);
 
-  arrangeGrid();
+  createGrid();
 
   revealSound.setVolume(0.4);
 
@@ -105,6 +106,7 @@ function drawMenu() {
   // show flags left
   fill(0);
 
+  // needs to be refactored
   let nfAmount;
   let rectW = 0;
   let rectX = 0;
@@ -154,7 +156,8 @@ function showButton() {
 
 function reset() {
   // reset grid
-  arrangeGrid();
+  createGrid();
+  gridArranged = false;
 
   // freez time
   freezeTime = true;
@@ -190,28 +193,47 @@ function showGrid() {
   }
 }
 
-function addBombs() {
+function getNeighbors(x, y){
+  // add cell and neighbors locations to an array
+  let locations = [];
+  for (let i = x - 1; i <= x + 1; i++) {
+    for (let j = y - 1; j <= y + 1; j++) {
+      if (i >= 0 && i < cols && j >= 0 && j < rows) {
+        const index = i + (j * cols);
+        locations.push(index);
+      }
+    }
+  }
+  // sort in descending order
+  locations = locations.sort((a, b) => b - a);
+  return locations;
+}
+
+function addBombs(x , y) {
   const options = [];
-  for (let i = 0; i < cols; i++) {
-    for (let j = 0; j < rows; j++) {
-      options.push({
-        x: i,
-        y: j
-      });
+  for (let j = 0; j < rows; j++) {
+    for (let i = 0; i < cols; i++) {
+      options.push({ x: i, y: j });
     }
   }
 
-  for (let k = 0; k < totalBombs; k++) {
+  // remove from options
+  for (let index of getNeighbors(x, y)) {
+    options.splice(index, 1);
+  }
+  
+  // add all bombs
+  for (let i = 0; i < totalBombs; i++) {
     const index = floor(random(options.length));
     const choice = options[index];
     grid[choice.x][choice.y].isBomb = true;
+    // remove chosen index from options
     options.splice(index, 1);
   }
 }
 
-function arrangeGrid() {
-  createGrid();
-  addBombs();
+function arrangeGrid(x, y) {
+  addBombs(x, y);
 
   for (let i = 0; i < cols; i++) {
     for (let j = 0; j < rows; j++) {
@@ -242,18 +264,26 @@ function mousePressed() {
 
 function mouseReleased() {
   if (state == 'gameover' || state == 'winning') return;
-
+  
   state = 'ongoing';
 
   for (let i = 0; i < cols; i++) {
     for (let j = 0; j < rows; j++) {
+
+      // arrange grid if not arranged
+      if (!gridArranged && grid[i][j].mouseHover()) {
+        arrangeGrid(i, j);
+        gridArranged = true;
+      }
+
+      
       // check if cursor is on the cell
       if (grid[i][j].mouseHover() && !grid[i][j].revealed) {
 
+        // left click
         if (mouseButton == LEFT && !grid[i][j].isFlagged) {
-          // left click
           grid[i][j].reveal();
-
+          
           // unfreez time on first click
           if (freezeTime) freezeTime = false;
 

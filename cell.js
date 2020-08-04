@@ -1,6 +1,6 @@
 class Cell {
   constructor(i, j) {
-
+    
     this.i = i;
     this.j = j;
 
@@ -33,51 +33,58 @@ class Cell {
     this.value = sum;
   }
 
+  showRevealed() {
+    push();
+    fill(this.bombPressed ? color(250, 10, 0) : revealedColor);
+    stroke(strokeColor);
+    strokeWeight(3);
+    rect(this.x, this.y, size, size);
+    // add value numbers if cell is not a bomb or has a value of 0
+    const textToShow = !this.isBomb && this.value != 0 ? this.value : this.isBomb ? '*' : '';
+    // show text
+    noStroke();
+    // if value is not none fill with corresponding color, otherwize fill with black
+    fill(this.value ? colors[this.value - 1] : color(0, 0, 0));
+    text(textToShow, this.x + size / 2, this.y + size / 2);
+    pop();
+  }
+
+  showUnrevealed() {
+    image(blockImg, this.x, this.y, size, size);
+    // flag
+    if (this.isFlagged) {
+      if (this.falseFlag) {
+        // false flag
+        push();
+        noStroke();
+        fill(0);
+        text('*', this.x + size / 2, this.y + size / 2);
+        strokeWeight(3);
+        stroke(250, 10, 0);
+        line(this.x + 7, this.y + 7, this.x + size - 7, this.y + size - 7);
+        line(this.x + size - 7, this.y + 7, this.x + 7, this.y + size - 7);
+        pop();
+      } else {
+        // regular flag
+        noStroke();
+        fill(0);
+        push();
+        textFont('sans serif');
+        text('🚩', this.x + size / 2, this.y + size / 2);
+        pop();
+      }
+    }
+  }
+
   show() {
     if (this.revealed) {
-      fill(this.bombPressed ? color(250, 10, 0) : revealedColor);
-      stroke(strokeColor);
-      strokeWeight(3);
-      rect(this.x, this.y, size, size);
-
-      // add value numbers if cell is not a bomb or has a value of 0
-      const textToShow = !this.isBomb && this.value != 0 ? this.value : this.isBomb ? '*' : '';
-
-      // show text
-      noStroke();
-      // if value is not none fill with corresponding color, otherwize fill with black
-      fill(this.value ? colors[this.value - 1] : color(0, 0, 0));
-      text(textToShow, this.x + size / 2, this.y + size / 2);
+      this.showRevealed();
     } else {
-
       if (this.mouseHover() && state == 'midclick' && !this.isFlagged) {
         fill(revealedColor);
         rect(this.x, this.y, size, size);
       } else {
-
-        image(blockImg, this.x, this.y, size, size);
-
-        // flag
-        if (this.isFlagged) {
-          if (this.falseFlag) {
-            // false flag
-            noStroke();
-            fill(0);
-            text('*', this.x + size / 2, this.y + size / 2);
-            strokeWeight(3);
-            stroke(250, 10, 0);
-            line(this.x + 7, this.y + 7, this.x + size - 7, this.y + size - 7);
-            line(this.x + size - 7, this.y + 7, this.x + 7, this.y + size - 7);
-          } else {
-            // regular flag
-            noStroke();
-            fill(0);
-            push();
-            textFont('sans serif');
-            text('🚩', this.x + size / 2, this.y + size / 2);
-            pop();
-          }
-        }
+        this.showUnrevealed();
       }
     }
   }
