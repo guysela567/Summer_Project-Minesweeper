@@ -134,6 +134,7 @@ function drawMenu() {
   textFont(sevenSegmentFont);
   showTimer();
   showFlagLeft();
+  showButton();
   pop();
 }
 
@@ -144,8 +145,7 @@ function draw() {
   // menu
   drawMenu();
 
-  // face button
-  showButton();
+  
 
   // grid
   showGrid();
