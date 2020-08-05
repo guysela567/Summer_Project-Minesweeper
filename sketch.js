@@ -79,34 +79,29 @@ function setup() {
   buttonX = width / 2 - buttonSize / 2;
 }     
          
-function drawMenu() {
-  push();
-
-  // menu frame
+function showTimer() {
   noFill();
   stroke(255);
   strokeWeight(2);
   rect(10, 10, width - 20, gridOffsetY - 20);
-
+  
   fill(255, 0, 0);
   noStroke();
   textSize(40);
-  textFont(sevenSegmentFont);
   textAlign(LEFT, CENTER);
-
-  // show timer
+  
   fill(0);
   rect(50, gridOffsetY * 1 / 4, 100, gridOffsetY * 1 / 2, 5);
-
+  
+  // show timer
   fill(255, 0, 0, 100);
   text('888', 50, 50);
   fill(255, 0, 0);
   text(nf(time, 3), 50, 50);
+}
 
+function showFlagLeft() {
   // show flags left
-  fill(0);
-
-  // needs to be refactored
   let nfAmount;
   let rectW = 0;
   let rectX = 0;
@@ -123,14 +118,22 @@ function drawMenu() {
     rectW = 130;
     rectX = width - 165;
   }
-
+  
+  fill(0);
   rect(rectX, gridOffsetY * 1 / 4, rectW, gridOffsetY * 1 / 2, 5);
   fill(255, 0, 0, 100);
   textAlign(RIGHT);
   text('888', width - 35, 50);
   fill(255, 0, 0);
   text(nf(flagsLeft(), nfAmount), width - 35, 50);
+}
 
+function drawMenu() {
+  push();
+  // menu frame
+  textFont(sevenSegmentFont);
+  showTimer();
+  showFlagLeft();
   pop();
 }
 
