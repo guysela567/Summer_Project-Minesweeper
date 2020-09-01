@@ -1,6 +1,6 @@
 class Cell {
   constructor(i, j) {
-    
+
     this.i = i;
     this.j = j;
 
@@ -90,8 +90,8 @@ class Cell {
   }
 
   update() {
-    if (this.mouseHover() && mouseIsPressed && mouseButton == LEFT 
-    && state == 'ongoing' && !this.revealed) {
+    if (this.mouseHover() && mouseIsPressed && mouseButton == LEFT &&
+      state == 'ongoing' && !this.revealed) {
       state = 'midclick';
     }
   }
