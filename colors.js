@@ -1,6 +1,7 @@
-const revealedColor = 189;
-const strokeColor = 123;
+const revealedColor = 189; // defualt unreavealed block color in grayscale rgb
+const strokeColor = 123; // defualt revealed block stroke color in grayscale rgb
 
+// cell value number colors, writen in hex code
 const colors = [
   '#0100fe',
   '#017f01',

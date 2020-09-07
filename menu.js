@@ -1,4 +1,6 @@
 function showTimer() {
+  // shows a timer on the menu
+
   noFill();
   stroke(255);
   strokeWeight(2);
@@ -12,7 +14,7 @@ function showTimer() {
   fill(0);
   rect(50, gridOffsetY * 1 / 4, 100, gridOffsetY * 1 / 2, 5);
 
-  // show timer
+  // draw the timer
   fill(255, 0, 0, 100);
   text('888', 50, 50);
   fill(255, 0, 0);
@@ -20,23 +22,11 @@ function showTimer() {
 }
 
 function showFlagLeft() {
-  // show flags left
-  let nfAmount;
-  let rectW = 0;
-  let rectX = 0;
-  if (flagsLeft() >= 0) {
-    nfAmount = 3;
-    rectW = 100;
-    rectX = width - 135;
-  } else if (flagsLeft() < 0 && flagsLeft() >= -99) {
-    nfAmount = 2;
-    rectW = 100;
-    rectX = width - 135;
-  } else if (flagsLeft() < -99) {
-    nfAmount = 2;
-    rectW = 130;
-    rectX = width - 165;
-  }
+  // show amount of flags left on the menu
+
+  const nfAmount = flagsLeft() >= 0 ? 3 : 2;
+  const rectW = flagsLeft() < -99 ? 130 : 100;
+  const rectX = flagsLeft() < -99 ? width - 165 : width - 135;
 
   fill(0);
   rect(rectX, gridOffsetY * 1 / 4, rectW, gridOffsetY * 1 / 2, 5);
@@ -48,8 +38,10 @@ function showFlagLeft() {
 }
 
 function drawMenu() {
+  /// shows the top menu
+
   push();
-  // menu frame
+  /// menu frame
   textFont(sevenSegmentFont);
   showTimer();
   showFlagLeft();
@@ -58,5 +50,6 @@ function drawMenu() {
 }
 
 function showButton() {
+  // shows the smily button on the middle of the menu
   image(buttonFaces[state], buttonX, buttonY, buttonSize, buttonSize);
 }

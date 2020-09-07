@@ -5,31 +5,14 @@ const totalBombs = 99;
 const gridOffsetY = 100;
 
 const buttonSize = size * 1.3;
-let buttonX;
+const buttonX = (cols * size) / 2 - buttonSize / 2;
 const buttonY = gridOffsetY / 2 - buttonSize / 2;
 
 let state = 'ongoing';
-let buttonFaces;
-
-/*
-
-three difficulties:
-
-cols 10, 20, 24
-rows 8, 18, 20
-totalbombs 10, 39, 99
-
-*/
 
 // grid
 let grid;
 let gridArranged = false;
-
-// images
-let blockImg;
-
-// fonts
-let sevenSegmentFont;
 
 // set timer
 let freezeTime = true;
@@ -39,68 +22,70 @@ let timeInterval = setInterval(() => {
   if (!freezeTime) time++;
 }, 1000);
 
-// sounds
-let revealSound;
-let gameOverSound;
-
 // prevent from menu to show on right click
 document.addEventListener('contextmenu', event => event.preventDefault());
 
+// sounds
+let revealSound;
+let gameOverSound;
+// images
+let blockImg;
+let buttonFaces;
+// fonts
+let sevenSegmentFont;
+
 function preload() {
-  blockImg = loadImage('assets/unrevealed_block.png');
-  sevenSegmentFont = loadFont('assets/Seven_Segment_Bold.ttf');
-  defaultFont = loadFont('assets/Minesweeper_Regular_Font.ttf');
-  revealSound = loadSound('assets/shatter.mp3');
-  gameOverSound = loadSound('assets/explosion.mp3');
+  // function containing loading files
+
+  blockImg = loadImage('assets/images/unrevealed_block.png');
+
+  sevenSegmentFont = loadFont('assets/fonts/Seven_Segment_Bold.ttf');
+  defaultFont = loadFont('assets/fonts/MINE-SWEEPER.ttf');
+
+  revealSound = loadSound('assets/sounds/shatter.mp3');
+  gameOverSound = loadSound('assets/sounds/explosion.mp3');
 
   buttonFaces = {
-    'winning': loadImage('assets/faces/winning.png'),
-    'ongoing': loadImage('assets/faces/smiling.png'),
-    'gameover': loadImage('assets/faces/dead.png'),
-    'midclick': loadImage('assets/faces/mid_click.png')
-  }
+    winning: loadImage('assets/images/faces/winning.png'),
+    ongoing: loadImage('assets/images/faces/smiling.png'),
+    gameover: loadImage('assets/images/faces/dead.png'),
+    midclick: loadImage('assets/images/faces/mid_click.png')
+  };
 }
 
 function setup() {
+  // triggers when all files are loaded, after preload and before draw
+
   createCanvas(cols * size, rows * size + gridOffsetY).center('horizontal');
-  textSize(size / 1.8);
-  textAlign(CENTER, CENTER);
 
   createGrid();
 
   revealSound.setVolume(0.4);
-
   // set pickaxe cursor
   cursor('assets/Pickaxe_Cursor.cur');
 
   textFont(defaultFont);
+  textSize(size / 1.8);
+  textAlign(CENTER, CENTER);
 
-  // button location
-  buttonX = width / 2 - buttonSize / 2;
 }
 
 function draw() {
+  // loops in 60 frames per second- main animations
+
   // background
   background(revealedColor);
-
-  // menu
   drawMenu();
-
-
-
-  // grid
   showGrid();
-
   if (checkWin()) state = 'winning';
 }
 
 function mousePressed() {
+  // triggers when mouse is pressed
+
   // click button
   if (mouseX > buttonX && mouseX < buttonX + buttonSize &&
-    mouseY > buttonY && mouseY < buttonY + buttonSize) {
-
-    reset();
-  }
+    mouseY > buttonY && mouseY < buttonY + buttonSize) reset();
 
   if (state == 'gameover') return;
 
@@ -115,20 +100,19 @@ function mousePressed() {
 }
 
 function mouseReleased() {
+  // triggers when mouse is released
+
   if (state == 'gameover' || state == 'winning') return;
 
   state = 'ongoing';
 
   for (let i = 0; i < cols; i++) {
     for (let j = 0; j < rows; j++) {
-
       // arrange grid if not arranged
       if (!gridArranged && grid[i][j].mouseHover()) {
         arrangeGrid(i, j);
         gridArranged = true;
       }
-
-
       // check if cursor is on the cell
       if (grid[i][j].mouseHover() && !grid[i][j].revealed) {
 
