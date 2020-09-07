@@ -1,5 +1,7 @@
 # Summer_Project-Minesweeper
 
+![image](https://user-images.githubusercontent.com/61588932/92414099-6c543f80-f15b-11ea-8ccd-26e399c9d5f3.png)
+
 # TODO List:
 - [x] grid
 - [x] cell object for every spot in the grid
