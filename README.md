@@ -8,7 +8,8 @@
 - [x] cell.revealed property
 - [x] cell.reveal recursive function
 - [x] win and fail check
-- [x] coloר
+- [x] color
+- [x] colopp
 - [x] reveal all remaining bombs after a loss
 - [x] start timer after first click
 - [x] arrange grid after first click and dont make neighbors bombs
