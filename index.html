@@ -8,21 +8,78 @@
 
 	<title>SummerProject Minesweeper</title>
 
+	<!-- p5.js libraries -->
 	<script src="libraries/p5.js"></script>
 	<script src="libraries/p5.dom.js"></script>
 	<script src="libraries/p5.sound.js"></script>
+
+	<!--  javascript -->
 	<script src="grid-functions.js"></script>
 	<script src="menu.js"></script>
 	<script src="colors.js"></script>
 	<script src="sketch.js"></script>
 	<script src="cell.js"></script>
+
+	<!-- css -->
 	<link rel="stylesheet" href="styles.css">
+
+	<!-- jQuery -->
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 </head>
 
 <body>
-	<h2>
-		<a href="license/">View license</a>
+
+	<script>
+		$(() => {
+			$('#instructions-button').css('visibility', 'hidden');
+			$('#instructions-dialog').dialog({
+				autoOpen: false,
+				draggable: true,
+				resizable: false,
+				width: 1000,
+				height: 570,
+				show: {
+					effect: 'blind',
+					duration: 500
+				},
+				hide: {
+					effect: 'blind',
+					duration: 500
+				}
+			});
+
+			$('#instructions-button').on('click', () => {
+				$('#instructions-dialog').dialog('open');
+			});
+		});
+	</script>
+
+	<div id="instructions-dialog" title="Instructions">
+		The purpose of the game is to open all the cells of the board which do not contain a bomb. You lose if you set off
+		a
+		bomb cell.
+
+		<p>
+			Every non-bomb cell you open will tell you the total number of bombs in the eight neighboring cells. Once you are
+			sure that a cell contains a bomb, you can right-click to put a flag it on it as a reminder.
+		</p>
+		<p>Once you have
+			flagged all the bombs around an open cell, you can quickly open the remaining non-bomb cells by
+			shift-clicking on the cell. To start a new game (abandoning the current one), just click on the yellow face
+			button.
+		</p>
+		<p>
+			<br>
+			Happy mine hunting!
+		</p>
+	</div>
+
+	<h2 style="position: relative;">
+		<a href="license/" id="license-link">View license</a>
+		<button id="instructions-button"><strong>INSTRUCTIONS</strong></button>
 	</h2>
 </body>
 

@@ -31,7 +31,7 @@ class Cell {
   update() {
     // updates state to midclick when player is about to reveal this cell
     if (this.mouseHover() && mouseIsPressed && mouseButton == LEFT &&
-      state == 'ongoing' && !this.revealed)
+      state == 'ongoing' && !this.revealed && !this.isFlagged)
       state = 'midclick';
   }
 

@@ -27,3 +27,5 @@
 - [x] reveal all remaining bombs after a loss
 - [x] start timer after first click
 - [x] arrange grid after first click and dont make neighbors bombs
+- [x] add a main menu
+

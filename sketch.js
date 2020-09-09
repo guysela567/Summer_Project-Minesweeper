@@ -55,7 +55,6 @@ function preload() {
 
 function setup() {
   // triggers when all files are loaded, after preload and before draw
-
   createCanvas(cols * size, rows * size + gridOffsetY).center('horizontal');
 
   createGrid();
@@ -68,10 +67,26 @@ function setup() {
   textSize(size / 1.8);
   textAlign(CENTER, CENTER);
 
+  const dialogBtn = select('#instructions-button');
+  dialogBtn.position(windowWidth / 2 - width / 2 - 3, 15);
+  $(() => {
+    $('#instructions-button').css('visibility', '');
+    $('#instructions-button').css('width', width + 6);
+  });
+
+  const licenseLink = select('#license-link');
+  licenseLink.position(windowWidth / 2 - width / 2 + 10, height + 100);
 }
 
 function draw() {
   // loops in 60 frames per second- main animations
+
+  if ($('#instructions-dialog').dialog('isOpen')) {
+    freezeTime = true;
+    return;
+  }
+
+  if (time === 999) reset();
 
   // background
   background(revealedColor);
@@ -83,6 +98,8 @@ function draw() {
 function mousePressed() {
   // triggers when mouse is pressed
 
+  if ($('#instructions-dialog').dialog('isOpen')) return;
+
   // click button
   if (mouseX > buttonX && mouseX < buttonX + buttonSize &&
     mouseY > buttonY && mouseY < buttonY + buttonSize) reset();
@@ -92,7 +109,7 @@ function mousePressed() {
   // add flag on right click
   for (let i = 0; i < cols; i++) {
     for (let j = 0; j < rows; j++) {
-      if (mouseButton == RIGHT && grid[i][j].mouseHover()) {
+      if (mouseButton == RIGHT && grid[i][j].mouseHover() && gridArranged) {
         grid[i][j].isFlagged = !grid[i][j].isFlagged;
       }
     }
@@ -102,6 +119,8 @@ function mousePressed() {
 function mouseReleased() {
   // triggers when mouse is released
 
+  if ($('#instructions-dialog').dialog('isOpen')) return;
+
   if (state == 'gameover' || state == 'winning') return;
 
   state = 'ongoing';
@@ -109,7 +128,7 @@ function mouseReleased() {
   for (let i = 0; i < cols; i++) {
     for (let j = 0; j < rows; j++) {
       // arrange grid if not arranged
-      if (!gridArranged && grid[i][j].mouseHover()) {
+      if (!gridArranged && grid[i][j].mouseHover() && mouseButton == LEFT) {
         arrangeGrid(i, j);
         gridArranged = true;
       }
@@ -120,7 +139,7 @@ function mouseReleased() {
         if (mouseButton == LEFT && !grid[i][j].isFlagged) {
           grid[i][j].reveal();
 
-          // unfreez time on first click
+          // unfreeze time on first click
           if (freezeTime) freezeTime = false;
 
           // check if player revealed bomb

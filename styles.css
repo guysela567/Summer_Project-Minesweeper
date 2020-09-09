@@ -1,9 +1,33 @@
+@font-face {
+  font-family: 'MINE-SWEEPER';
+  src: url('assets/fonts/MINE-SWEEPER.ttf') format('truetype');
+}
+
 body {
   margin: 0;
   padding: 0;
+  overflow: hidden;
+  background: lightgray;
+  user-select: none;
 }
 
 canvas {
   margin: auto;
   border: 3px rgb(123, 123, 123) solid;
+}
+
+#instructions-dialog {
+  padding-top: 30px;
+  font-size: 1.2rem;
+  background-color: gray;
+  overflow: hidden;
+  color: white;
+  font-family: 'MINE-SWEEPER';
+}
+
+#instructions-button {
+  position: absolute;
+  font-size: 16pt;
+  background-color: lightgray;
+  border-radius: 5px;
 }
