@@ -86,7 +86,7 @@ function draw() {
     return;
   }
 
-  if (freezeTime) freezeTime = false;
+  if (gridArranged && freezeTime) freezeTime = false;
 
   if (time === 999) reset();
 
