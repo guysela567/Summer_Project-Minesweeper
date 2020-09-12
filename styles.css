@@ -30,4 +30,9 @@ canvas {
   font-size: 16pt;
   background-color: lightgray;
   border-radius: 5px;
+  color: darkslategray;
+}
+
+#instructions-button:focus {
+  outline: none;
 }

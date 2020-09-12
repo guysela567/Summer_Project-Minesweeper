@@ -55,7 +55,7 @@ function preload() {
 
 function setup() {
   // triggers when all files are loaded, after preload and before draw
-  createCanvas(cols * size, rows * size + gridOffsetY).center('horizontal');
+  const canvas = createCanvas(cols * size, rows * size + gridOffsetY).center('horizontal');
 
   createGrid();
 
@@ -67,15 +67,13 @@ function setup() {
   textSize(size / 1.8);
   textAlign(CENTER, CENTER);
 
-  const dialogBtn = select('#instructions-button');
-  dialogBtn.position(windowWidth / 2 - width / 2 - 3, 15);
+  // set position of dialog button and license link
   $(() => {
-    $('#instructions-button').css('visibility', '');
-    $('#instructions-button').css('width', width + 6);
+    select('#instructions-button').position(windowWidth / 2 - width / 2 - 3, canvas.y - 29);
+    $('#instructions-button').css({visibility: '', width: width + 6});
+    select('#license-link').position(20, windowHeight - 65)
+    $('#license-link').css('visibility', '');
   });
-
-  const licenseLink = select('#license-link');
-  licenseLink.position(windowWidth / 2 - width / 2 + 10, height + 100);
 }
 
 function draw() {
@@ -86,7 +84,7 @@ function draw() {
     return;
   }
 
-  if (gridArranged && freezeTime) freezeTime = false;
+  if (gridArranged && freezeTime && state == 'ongoing') freezeTime = false;
 
   if (time === 999) reset();
 
@@ -122,7 +120,6 @@ function mouseReleased() {
   // triggers when mouse is released
 
   if ($('#instructions-dialog').dialog('isOpen')) return;
-
   if (state == 'gameover' || state == 'winning') return;
 
   state = 'ongoing';

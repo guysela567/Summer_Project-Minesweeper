@@ -80,7 +80,6 @@ function arrangeGrid(x, y) {
 
 function gameOver() {
   // triggers when player lost
-
   state = 'gameover';
   gameOverSound.play();
   freezeTime = true;

@@ -34,7 +34,10 @@
 
 	<script>
 		$(() => {
+			// hide instructions button and font license link when page is loaded
 			$('#instructions-button').css('visibility', 'hidden');
+			$('#license-link').css('visibility', 'hidden')
+
 			$('#instructions-dialog').dialog({
 				autoOpen: false,
 				draggable: true,
@@ -59,9 +62,7 @@
 
 	<div id="instructions-dialog" title="Instructions">
 		The purpose of the game is to open all the cells of the board which do not contain a bomb. You lose if you set off
-		a
-		bomb cell.
-
+		a bomb cell.
 		<p>
 			Every non-bomb cell you open will tell you the total number of bombs in the eight neighboring cells. Once you are
 			sure that a cell contains a bomb, you can right-click to put a flag it on it as a reminder.
@@ -77,10 +78,12 @@
 		</p>
 	</div>
 
-	<h2 style="position: relative;">
-		<a href="license/" id="license-link">View license</a>
-		<button id="instructions-button"><strong>INSTRUCTIONS</strong></button>
-	</h2>
+	<section>
+		<button id="instructions-button"><strong>CLICK FOR INSTRUCTIONS</strong></button>
+		<h2 id="license-link">
+			<i>MINE-SWEEPER</i> font is made by Gezoda on Fontstruct. <a href="https://fontstruct.com/fontstructions/show/1501665">Link to Fontstruct</a>.
+		</h2>
+	</section>
 </body>
 
 </html>
