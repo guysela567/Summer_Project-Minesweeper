@@ -1,3 +1,5 @@
+# [Link to website](https://minesweeper.vercel.app)
+
 # Summer_Project-Minesweeper
 
 ## About the project
